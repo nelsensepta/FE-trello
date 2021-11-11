@@ -7,10 +7,15 @@ import Header from "../../components/Header";
 import "./list.css";
 export default function HomePage() {
   const [isToggleList, setisToggleList] = useState(false);
-
+  const [todos, setTodos] = useState([]);
+  // console.log(todos);
   const getTodosApi = async () => {
-    const response = await getTodos();
-    console.log(response);
+    try {
+      const response = await getTodos();
+      setTodos(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -18,9 +23,9 @@ export default function HomePage() {
   }, []);
   return (
     <>
-      <Header>MERN Clone Trello</Header>
+      <Header>MERN Clone Trello Menit 02:35:00</Header>
       <Board>
-        <Card />
+        <Card todos={todos} />
         <div className="add-list">
           {isToggleList ? (
             <AddList handleCancel={() => setisToggleList(!isToggleList)} />
@@ -37,5 +42,3 @@ export default function HomePage() {
     </>
   );
 }
-
-// Menit 02:17:43
