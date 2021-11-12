@@ -1,9 +1,32 @@
 import React, { useState } from "react";
+import { createTodo } from "../../api/todos";
 import ButtonGroup from "../ButtonGroup";
 import TextField from "../TextField";
 import "./add-list.css";
-export default function AddList({ handleCancel }) {
+
+export default function AddList({ handleCancel, getTodosAPI }) {
   const [name, setName] = useState("");
+  // console.log(getTodosAPI());
+
+  const handleClear = () => {
+    setName("");
+    handleCancel();
+  };
+
+  const saveTodos = async () => {
+    try {
+      const payload = { name: name };
+      const response = await createTodo(payload);
+      if (response.status === 201) {
+        getTodosAPI();
+        handleClear();
+        console.log("Benaar");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="add-list-editor">
       <TextField
@@ -13,7 +36,12 @@ export default function AddList({ handleCancel }) {
         placeholder="Enter list title"
         className="list-title-textarea"
       />
-      <ButtonGroup saveLabel="Add list" handleCancel={handleCancel} />
+
+      <ButtonGroup
+        saveLabel="Add list"
+        handleCancel={handleCancel}
+        handleSave={() => saveTodos()}
+      />
     </div>
   );
 }

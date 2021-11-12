@@ -8,12 +8,14 @@ export default function TextField({
   placeholder,
   className,
   deleteList,
+  onEnter,
   handleCancel,
 }) {
   return (
     <div className="list-title-edit">
       <TextareaAutosize
         autoFocus
+        onKeyDown={onEnter}
         className={className}
         name={name}
         value={value}

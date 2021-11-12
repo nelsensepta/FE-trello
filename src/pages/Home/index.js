@@ -6,10 +6,10 @@ import Card from "../../components/Card";
 import Header from "../../components/Header";
 import "./list.css";
 export default function HomePage() {
-  const [isToggleList, setisToggleList] = useState(false);
+  const [isToggleList, setIsToggleList] = useState(false);
   const [todos, setTodos] = useState([]);
-  // console.log(todos);
-  const getTodosApi = async () => {
+  console.log(todos);
+  const getTodosAPI = async () => {
     try {
       const response = await getTodos();
       setTodos(response.data.data);
@@ -19,20 +19,23 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    getTodosApi();
+    getTodosAPI();
   }, []);
   return (
     <>
-      <Header>MERN Clone Trello Menit 02:35:00</Header>
+      <Header>MERN Clone Trello Menit 02:41:20</Header>
       <Board>
-        <Card todos={todos} />
+        <Card todos={todos} getTodosAPI={() => getTodosAPI()} />
         <div className="add-list">
           {isToggleList ? (
-            <AddList handleCancel={() => setisToggleList(!isToggleList)} />
+            <AddList
+              handleCancel={() => setIsToggleList(!isToggleList)}
+              getTodosAPI={() => getTodosAPI()}
+            />
           ) : (
             <div
               className="add-list-button"
-              onClick={() => setisToggleList(!isToggleList)}
+              onClick={() => setIsToggleList(!isToggleList)}
             >
               <ion-icon name="add-outline"></ion-icon> Add a list
             </div>
