@@ -4,6 +4,7 @@ import { getOneTodo, updateTodo, deleteTodo } from "../../api/todos";
 import Title from "../Title";
 import "./card.css";
 import AddCard from "../AddCard";
+import { moveItem } from "../../api/items";
 export default function Card({ todos, getTodosAPI }) {
   const [editList, setEditlist] = useState({
     status: false,
@@ -14,10 +15,12 @@ export default function Card({ todos, getTodosAPI }) {
   const [card, setCard] = useState([]);
   const [todoID, setTodoID] = useState(null);
   const [hover, setHover] = useState(null);
+  const [itemID, setItemID] = useState(null);
 
   useEffect(() => {
     setCard(todos);
   }, [todos]);
+
   const toggleEditList = async (id, status) => {
     try {
       const response = await getOneTodo(id);
@@ -79,9 +82,38 @@ export default function Card({ todos, getTodosAPI }) {
         card.status = !card.status;
       }
     });
-
     setCard(temp);
     setTodoID(id);
+  };
+
+  const toggleEditCard = (todoID, itemID) => {
+    const temp = [...card];
+    temp.forEach((card) => {
+      if (card.id === todoID) {
+        card.Items.forEach((item) => {
+          if (item.id === itemID) {
+            item.isEdit = !item.isEdit;
+          }
+        });
+      }
+    });
+    setCard(temp);
+    setTodoID(todoID);
+    setItemID(itemID);
+  };
+
+  const moveItemAPI = async (todoID, itemID) => {
+    try {
+      const payload = {
+        targetTodoId: todoID,
+      };
+      const response = await moveItem(itemID, payload);
+      if (response.status === 200) {
+        getTodosAPI();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <>
@@ -112,23 +144,58 @@ export default function Card({ todos, getTodosAPI }) {
                 </Title>
               )}
 
-              {todo.Items.map((item) => (
-                <div
-                  className="card"
-                  key={item.id}
-                  onMouseEnter={() => setHover(item.id)}
-                  onMouseLeave={() => setHover(null)}
-                >
-                  {hover === item.id && (
-                    <div className="card-icons">
-                      <div className="card-icon">
-                        <ion-icon name="pencil-outline"></ion-icon>
-                      </div>
-                    </div>
-                  )}
+              {todo.Items.map((item, t) => (
+                <React.Fragment key={t}>
+                  {!item.isEdit ? (
+                    <div
+                      className="card"
+                      key={t}
+                      onMouseEnter={() => setHover(item.id)}
+                      onMouseLeave={() => setHover(null)}
+                    >
+                      {hover === item.id && (
+                        <div className="card-icons">
+                          <div
+                            className="card-icon"
+                            onClick={() => toggleEditCard(todo.id, item.id)}
+                          >
+                            <ion-icon name="pencil-outline"></ion-icon>
+                          </div>
 
-                  {item.name}
-                </div>
+                          {i !== 0 && (
+                            <div
+                              className="card-icon"
+                              onClick={() =>
+                                moveItemAPI(card[i - 1].id, item.id)
+                              }
+                            >
+                              <ion-icon name="arrow-back-outline"></ion-icon>
+                            </div>
+                          )}
+                          {card.length - 1 !== i && (
+                            <div
+                              className="card-icon"
+                              onClick={() =>
+                                moveItemAPI(card[i + 1].id, item.id)
+                              }
+                            >
+                              <ion-icon name="arrow-forward-outline"></ion-icon>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {item.name}
+                    </div>
+                  ) : (
+                    <AddCard
+                      getTodosAPI={getTodosAPI}
+                      todoID={todoID}
+                      itemID={itemID}
+                      cancel={() => toggleEditCard(todo.id, item.id)}
+                    />
+                  )}
+                </React.Fragment>
               ))}
 
               {todo.status ? (

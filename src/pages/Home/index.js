@@ -14,6 +14,9 @@ export default function HomePage() {
       const response = await getTodos();
       response.data.data.forEach((res) => {
         res.status = false;
+        res.Items.forEach((item) => {
+          item.isEdit = false;
+        });
       });
       setTodos(response.data.data);
     } catch (err) {
@@ -26,7 +29,7 @@ export default function HomePage() {
   }, []);
   return (
     <>
-      <Header>MERN Clone Trello Menit 03:14:20</Header>
+      <Header>MERN Clone Trello Menit 03:44:20</Header>
       <Board>
         <Card todos={todos} getTodosAPI={() => getTodosAPI()} />
         <div className="add-list">
