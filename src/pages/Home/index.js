@@ -8,10 +8,13 @@ import "./list.css";
 export default function HomePage() {
   const [isToggleList, setIsToggleList] = useState(false);
   const [todos, setTodos] = useState([]);
-  console.log(todos);
+
   const getTodosAPI = async () => {
     try {
       const response = await getTodos();
+      response.data.data.forEach((res) => {
+        res.status = false;
+      });
       setTodos(response.data.data);
     } catch (err) {
       console.log(err);
@@ -23,7 +26,7 @@ export default function HomePage() {
   }, []);
   return (
     <>
-      <Header>MERN Clone Trello Menit 02:41:20</Header>
+      <Header>MERN Clone Trello Menit 03:14:20</Header>
       <Board>
         <Card todos={todos} getTodosAPI={() => getTodosAPI()} />
         <div className="add-list">

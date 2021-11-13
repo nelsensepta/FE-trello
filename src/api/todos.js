@@ -7,6 +7,9 @@ export function getTodos() {
 export function getOneTodo(id) {
   return axios.get(`${config.api_host}/api/v1/todos/${id}`);
 }
+export function deleteTodo(id) {
+  return axios.delete(`${config.api_host}/api/v1/todos/${id}`);
+}
 
 export function createTodo(data) {
   return axios.post(`${config.api_host}/api/v1/todos`, data);
